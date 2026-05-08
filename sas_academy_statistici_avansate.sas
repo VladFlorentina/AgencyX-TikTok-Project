@@ -34,7 +34,7 @@ PROC REPORT DATA=WORK.TOP_CREATORI NOWD HEADLINE CENTER;
     COLUMN author cate_clipuri like_uri_totale;
     
     /* formatari sa dea bine la ochii profului, cum ne-a aratat    */
-    DEFINE author / DISPLAY 'Creatorul vizat' FORMAT=\. WIDTH=20;
+    DEFINE author / DISPLAY 'Creatorul vizat' FORMAT=$30. WIDTH=20;
     DEFINE cate_clipuri / ANALYSIS SUM 'Total clipuri in tabel' FORMAT=COMMA8.;
     DEFINE like_uri_totale / ANALYSIS SUM 'Like-uri stranse per total' FORMAT=COMMA12.;
 RUN;
@@ -47,6 +47,7 @@ PROC MEANS DATA=WORK.TIKTOK_FINAL N MEAN MIN MAX MAXDEC=2;
     TITLE 'Ce inseamna sa fii viral? (Statistici din MEAN)';
     CLASS Viral_Flag; /* Asta grupeaza statistica dupa variabila asta  */
     VAR likes plays cate_clipuri;
+    FORMAT likes eng_level.; /* CERINTA 2: folosirea formatului definit de colega */
 RUN;
 
 /* A doua: sa ne dam seama de unde trag aprecierile                */

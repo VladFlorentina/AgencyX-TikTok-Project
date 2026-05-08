@@ -133,7 +133,8 @@ def render_overview_page(df: pd.DataFrame) -> None:
     if {"author", "likes"}.issubset(df.columns):
         top_authors = df.groupby("author", as_index=False)["likes"].sum().sort_values("likes", ascending=False).head(10)
         st.write("### Top autori dupa aprecieri")
-        st.bar_chart(top_authors.set_index("author")["likes"])
+        fig = px.bar(top_authors, x="author", y="likes", title="Top autori după aprecieri (Plotly)")
+        st.plotly_chart(fig, use_container_width=True)
 
     if {"create_time", "likes"}.issubset(df.columns):
         time_series = df.dropna(subset=["create_time"]).copy()

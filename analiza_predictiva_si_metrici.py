@@ -113,3 +113,32 @@ def pagina_clusterizare_kmeans(df: pd.DataFrame) -> None:
         
     else:
         st.warning("Nu aveam destule randuri filtrata pentru a face impartirea.")
+
+    st.markdown("---")
+    st.subheader("2. Regresie Logistica (scikit-learn)")
+    st.write("Verificam posibilitatea de a prezice daca un videoclip va fi viral (Viral_Flag = peste 50.000 vizualizari)")
+
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+
+    reg_data = df[['likes', 'comments', 'shares', 'plays']].dropna().copy()
+    if len(reg_data) > 10:
+        # cream o clasificare binara ca sa aplicam regresia logistica
+        reg_data['Este_Viral'] = (reg_data['plays'] > 50000).astype(int)
+        
+        X_logistic = reg_data[['likes', 'comments', 'shares']]
+        y_logistic = reg_data['Este_Viral']
+
+        # folosim StandardScaler cum cere cerinta din culise (codificare/pregatire pt analiza)
+        scaler = StandardScaler()
+        X_scalat = scaler.fit_transform(X_logistic)
+
+        log_reg = LogisticRegression(random_state=42)
+        log_reg.fit(X_scalat, y_logistic)
+        scor_predictie = log_reg.score(X_scalat, y_logistic)
+
+        st.success(f"Acuratetea Regresiei Logistice pe datele setate: {scor_predictie:.2%}")
+        st.caption("Am folosit modelul ca sa clasificam postarile pe baza parametrilor si a scalarii (StandardScaler).")
+    else:
+        st.info("Baga mai multe date pentru antrenarea regresiei logistice (minim 10)")
+
