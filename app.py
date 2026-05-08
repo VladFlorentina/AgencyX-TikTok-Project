@@ -90,7 +90,7 @@ def filter_data(df: pd.DataFrame) -> pd.DataFrame:
 
     likes_min = int(df["likes"].min()) if "likes" in df.columns else 0
     likes_max = int(df["likes"].max()) if "likes" in df.columns else 0
-    selected_likes = st.sidebar.slider("Minimum aprecieri (likes)", likes_min, likes_max, likes_min)
+    selected_likes = st.sidebar.number_input("Minimum aprecieri (likes)", min_value=likes_min, max_value=likes_max, value=likes_min, step=1000)
 
     if "plays_scaled" in df.columns:
         play_min = float(df["plays_scaled"].min())
