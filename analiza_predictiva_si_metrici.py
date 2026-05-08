@@ -1,4 +1,4 @@
-﻿# PACHET REALIZAT DE: [Numele Tau]
+﻿
 # Cerinte Bifate: 7 (loc/iloc), 9 (scikit-learn), 10 (statsmodels), 11 (metrici specifice)
 
 import pandas as pd

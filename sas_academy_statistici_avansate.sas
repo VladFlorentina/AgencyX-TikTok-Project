@@ -1,8 +1,7 @@
-﻿/* ============================================================== */
-/* PACHET REALIZAT DE: [Numele Tau]                               */
+﻿                        
 /* Ce am facut eu: Partea de curatare cu SQL, grafice si testari  */
 /*                         (Cerintele 6-10)                       */
-/* ============================================================== */
+
 
 /* Aici ne bazam pe setul WORK.TIKTOK_CLEAN pe care l-a facut ea  */
 /* si care contine baza filtrata si fara na-uri.                  */
@@ -75,4 +74,3 @@ PROC SGPLOT DATA=WORK.TIKTOK_CLEAN;
     KEYLEGEND / TITLE="Prag viral (1 = da / 0 = inca nu)";
 RUN;
 
-/* --- GATA MY PART --- */
