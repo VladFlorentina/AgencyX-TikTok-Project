@@ -1,3 +1,10 @@
+from analiza_predictiva_si_metrici import (
+    pagina_inspector_virale,
+    pagina_metrici_generale,
+    pagina_regresie_statsmodels,
+    pagina_clusterizare_kmeans
+)
+
 from pathlib import Path
 
 import pandas as pd
@@ -204,154 +211,38 @@ def render_post_analysis_page(df: pd.DataFrame) -> None:
         st.dataframe(top_posts, use_container_width=True)
 
 
-def render_row_inspector_page(df: pd.DataFrame) -> None:
-    st.title("Inspector randuri")
-
-    if df.empty:
-        st.info("Nu exista randuri disponibile in urma filtrarii.")
-        return
-
-    max_index = len(df) - 1
-    row_index = st.slider("Selecteaza indexul randului", 0, max_index, 0)
-
-    st.write("### Rezultat folosind 'loc'")
-    st.dataframe(df.loc[[df.index[row_index]]], use_container_width=True)
-
-    st.write("### Rezultat folosind 'iloc'")
-    st.dataframe(df.iloc[[row_index]], use_container_width=True)
-
-    st.write("### Detalii complete rand selectat")
-    selected_row = df.iloc[row_index]
-    st.json({key: (None if pd.isna(value) else str(value)) for key, value in selected_row.to_dict().items()})
-
-
-def render_summary_page(df: pd.DataFrame) -> None:
-    st.title("Metrici recapitulative")
-
-    if df.empty:
-        st.info("Nu exista date disponibile pentru rezumat.")
-        return
-
-    summary = pd.DataFrame(
-        {
-            "metrica": ["randuri", "coloane", "media_aprecieri", "mediana_aprecieri", "media_vizualizari", "mediana_vizualizari"],
-            "valoare": [
-                len(df),
-                df.shape[1],
-                float(df["likes"].mean()) if "likes" in df.columns else 0.0,
-                float(df["likes"].median()) if "likes" in df.columns else 0.0,
-                float(df["plays"].mean()) if "plays" in df.columns else 0.0,
-                float(df["plays"].median()) if "plays" in df.columns else 0.0,
-            ],
-        }
-    )
-
-    st.dataframe(summary, use_container_width=True)
-    if {"author", "likes"}.issubset(df.columns):
-        author_totals = df.groupby("author", as_index=False)["likes"].sum().sort_values("likes", ascending=False).head(10)
-        st.write("### Total aprecieri per autor")
-        st.bar_chart(author_totals.set_index("author")["likes"])
-
-
-def render_statistical_modeling_page(df: pd.DataFrame) -> None:
-    st.title("Modelare statistica (Statsmodels)")
-
-    if {"likes", "comments", "shares", "plays"}.issubset(df.columns):
-        st.write("### Regresie Liniara Multipla (OLS)")
-        st.write("Se prezice numarul de vizualizari ('plays') in functie de 'likes', 'comments' si 'shares'.")
-        
-        # Prepare data for regression
-        data = df[["likes", "comments", "shares", "plays"]].dropna()
-        if len(data) > 10:
-            X = data[["likes", "comments", "shares"]]
-            y = data["plays"]
-            X = sm.add_constant(X)
-            
-            try:
-                model = sm.OLS(y, X).fit()
-                st.text(model.summary().as_text())
-                
-                st.write("### Esantion predictii model")
-                data["vizualizari_prezise"] = model.predict(X)
-                st.dataframe(data[["plays", "vizualizari_prezise", "likes"]].head(10), use_container_width=True)
-            except Exception as e:
-                st.error(f"Eroare la antrenarea modelului: {e}")
-        else:
-            st.info("Nu exista suficiente date valide pentru regresie.")
-            
-
-def render_machine_learning_page(df: pd.DataFrame) -> None:
-    st.title("Machine learning (Scikit-Learn)")
-
-    if {"likes", "comments", "shares"}.issubset(df.columns):
-        st.write("### Gruparea cu K-Means (Clustering)")
-        st.write("Postarile sunt grupate in functie de gradul de interactiune (angajament).")
-        
-        k_clusters = st.slider("Selecteaza numarul de grupuri (K)", 2, 6, 3)
-        
-        data = df[["likes", "comments", "shares"]].dropna()
-        if len(data) > 10:
-            scaler = StandardScaler()
-            scaled_data = scaler.fit_transform(data)
-            
-            kmeans = KMeans(n_clusters=k_clusters, random_state=42, n_init='auto')
-            data["cluster"] = kmeans.fit_predict(scaled_data)
-            
-            st.write(f"### Distributia grupurilor pentru K={k_clusters}")
-            
-            if "plays" in df.columns:
-                data["plays"] = df["plays"].loc[data.index]
-                fig = px.scatter(
-                    data, x="likes", y="plays", color=data["cluster"].astype(str),
-                    title="Grupuri: Aprecieri vs Vizualizari",
-                    labels={"color": "ID Grup"}
-                )
-                st.plotly_chart(fig, use_container_width=True)
-            
-            st.write("### Mediile metricilor per grup")
-            cluster_centers = data.groupby("cluster").mean()
-            st.dataframe(cluster_centers, use_container_width=True)
-        else:
-            st.info("Sunt necesare mai multe date pentru clustere.")
-
 def main() -> None:
     st.sidebar.title("TrendTok Solutions")
-    st.sidebar.caption("Structura proiectului pentru Pachete Software")
+    st.sidebar.caption("Proiect Pachete Software (11 Facilitati Python)")
 
-    page = st.sidebar.radio(
-        "Meniu navigare",
-        [
-            "General (Overview)", 
-            "Calitatea datelor", 
-            "Analiza autorilor", 
-            "Analiza postarilor", 
-            "Inspector randuri", 
-            "Machine learning",
-            "Modele statistice",
-            "Metrici recapitulative"
-        ],
+    st.sidebar.header("Modul 1: Analiza Descriptiva")
+    page_1 = st.sidebar.radio(
+        "Sectiunea de baza (Colega):",
+        ["General (Overview)", "Calitatea datelor", "Analiza autorilor", "Analiza postarilor"]
+    )
+    
+    st.sidebar.header("Modul 2: Analiza Statistica")
+    page_2 = st.sidebar.radio(
+        "Sectiunea de varf (Tu):",
+        ["Nimic selectat", "Inspector Virale (loc/iloc)", "Metrici Actuale", "Regresie (Statsmodels)", "Tipologii (K-Means)"]
     )
 
     data = prepare_data()
     filtered_data = filter_data(data)
-
-    if page == "General (Overview)":
-        render_overview_page(filtered_data)
-    elif page == "Calitatea datelor":
-        render_data_quality_page(filtered_data)
-    elif page == "Analiza autorilor":
-        render_author_analysis_page(filtered_data)
-    elif page == "Analiza postarilor":
-        render_post_analysis_page(filtered_data)
-    elif page == "Inspector randuri":
-        render_row_inspector_page(filtered_data)
-    elif page == "Machine learning":
-        render_machine_learning_page(filtered_data)
-    elif page == "Modele statistice":
-        render_statistical_modeling_page(filtered_data)
-    else:
-        render_summary_page(filtered_data)
-
+    
+    st.sidebar.markdown("---")
+    
+    if page_1 == "General (Overview)": render_overview_page(filtered_data)
+    if page_1 == "Calitatea datelor": render_data_quality_page(filtered_data)
+    if page_1 == "Analiza autorilor": render_author_analysis_page(filtered_data)
+    if page_1 == "Analiza postarilor": render_post_analysis_page(filtered_data)
+    
+    if page_2 != "Nimic selectat":
+        st.markdown("---")
+        if page_2 == "Inspector Virale (loc/iloc)": pagina_inspector_virale(filtered_data)
+        if page_2 == "Metrici Actuale": pagina_metrici_generale(filtered_data)
+        if page_2 == "Regresie (Statsmodels)": pagina_regresie_statsmodels(filtered_data)
+        if page_2 == "Tipologii (K-Means)": pagina_clusterizare_kmeans(filtered_data)
 
 if __name__ == "__main__":
     main()

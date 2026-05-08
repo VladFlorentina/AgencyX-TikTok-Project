@@ -1,3 +1,6 @@
+/* PACHET REALIZAT DE: Colega Ta - Partea 1 */
+/* Cerinte Bifate: 1-5 */
+
 /* --- PROIECT PACHETE SOFTWARE (SAS) - TRENDTOK SOLUTIONS --- */
 /* Nota 10 - Toate cele 10 facilitati implementate */
 
@@ -40,58 +43,5 @@ DATA WORK.TIKTOK_CLEAN (DROP=i);
     ELSE Viral_Flag = 0;
 RUN;
 
-/* 6. Combinarea seturilor de date (PROC SQL / INNER JOIN) */
-/* Cream un dataset agregat cu autorii principali si ii facem join inapoi cu dataset-ul mare */
-PROC SQL;
-    CREATE TABLE WORK.AUTHOR_STATS AS
-    SELECT author, COUNT(video_id) AS total_videos, SUM(likes) AS total_likes
-    FROM WORK.TIKTOK_CLEAN
-    GROUP BY author
-    HAVING total_likes > 100000;
 
-    CREATE TABLE WORK.TIKTOK_COMBINED AS
-    SELECT a.*, b.total_videos
-    FROM WORK.TIKTOK_CLEAN a
-    INNER JOIN WORK.AUTHOR_STATS b
-    ON a.author = b.author;
-QUIT;
-
-/* 8. Utilizarea de proceduri pentru raportare */
-PROC REPORT DATA=WORK.AUTHOR_STATS NOWD HEADLINE CENTER;
-    TITLE 'Top Authors Report (Likes > 100K)';
-    COLUMN author total_videos total_likes;
-    DEFINE author / DISPLAY 'Content Author' WIDTH=30;
-    DEFINE total_videos / ANALYSIS SUM 'No. of Posts';
-    DEFINE total_likes / ANALYSIS SUM 'Total Likes' FORMAT=COMMA12.;
-RUN;
-
-/* 9. Proceduri statistice (PROC FREQ, PROC CORR, PROC MEANS) */
-PROC FREQ DATA=WORK.TIKTOK_CLEAN;
-    TITLE 'Engagement Levels Frequency';
-    TABLES likes / NOCUM;
-    FORMAT likes eng_level.; /* Aplicarea formatului punctul 2 */
-RUN;
-
-PROC CORR DATA=WORK.TIKTOK_CLEAN;
-    TITLE 'Correlation Between Engagement Metrics';
-    VAR likes comments shares plays;
-RUN;
-
-PROC MEANS DATA=WORK.TIKTOK_CLEAN N MEAN MIN MAX;
-    TITLE 'General Metrics Analytics';
-    VAR likes comments shares plays;
-    CLASS Viral_Flag; /* Segmentare baza pe IF-ul de la punctul 3 */
-RUN;
-
-/* 10. Generarea de grafice (PROC SGPLOT) */
-PROC SGPLOT DATA=WORK.TIKTOK_CLEAN;
-    TITLE 'Scatter Plot: Likes vs Plays Distribution by Viral Status';
-    SCATTER X=plays Y=likes / GROUP=Viral_Flag;
-    XAXIS LABEL='Total Plays';
-    YAXIS LABEL='Total Likes';
-RUN;
-
-PROC SGPLOT DATA=WORK.AUTHOR_STATS;
-    TITLE 'Bar Chart: Top Authors by Total Likes';
-    VBAR author / RESPONSE=total_likes CATEGORYORDER=RESPDESC;
-RUN;
+/* --- SFARSIT PARTEA 1 (Colega) --- */
