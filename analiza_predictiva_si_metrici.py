@@ -133,12 +133,16 @@ def pagina_clusterizare_kmeans(df: pd.DataFrame) -> None:
         scaler = StandardScaler()
         X_scalat = scaler.fit_transform(X_logistic)
 
-        log_reg = LogisticRegression(random_state=42)
-        log_reg.fit(X_scalat, y_logistic)
-        scor_predictie = log_reg.score(X_scalat, y_logistic)
+        # Verificam daca setul filtrat are ambele clase (si clipuri virale si ne-virale)
+        if len(y_logistic.unique()) < 2:
+            st.warning("Eroare de model evitata: In momentul de fata toate datele tale filtrate fac parte din aceeasi categorie (ex: TOATE sunt virale). Modifica filtrele din stanga pentru a include si clipuri mai slabe, altfel regresia nu are ce compara.")
+        else:
+            log_reg = LogisticRegression(random_state=42)
+            log_reg.fit(X_scalat, y_logistic)
+            scor_predictie = log_reg.score(X_scalat, y_logistic)
 
-        st.success(f"Acuratetea Regresiei Logistice pe datele setate: {scor_predictie:.2%}")
-        st.caption("Am folosit modelul ca sa clasificam postarile pe baza parametrilor si a scalarii (StandardScaler).")
+            st.success(f"Acuratetea Regresiei Logistice pe datele setate: {scor_predictie:.2%}")
+            st.caption("Am folosit modelul ca sa clasificam postarile pe baza parametrilor si a scalarii (StandardScaler).")
     else:
         st.info("Baga mai multe date pentru antrenarea regresiei logistice (minim 10)")
 
