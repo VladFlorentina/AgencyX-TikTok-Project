@@ -74,9 +74,9 @@ def pagina_regresie_statsmodels(df: pd.DataFrame) -> None:
             model = sm.OLS(y, X).fit()
             
             st.write("### Rezumat tehnic model:")
-            # afisez doar primele detalii din output sa nu umplu ecranul aiurea
-            st.text(model.summary().as_text()[:800] + "\n\n[...] am taiat restul tabelului ca sa arate mai curat pe ecran")
-            
+            # afisez exact decupajul din primul tabel al modelului, pentru a pastra aliniamentele perfecte
+            st.text(model.summary().tables[0].as_text())
+
             st.success(f"Valoarea R-squared este: {model.rsquared:.3f}. Daca e aproape de 1 inseamna ca modelul explica bine datele!")
         except Exception as eroare_model:
             st.error(f"Ceva nu a mers la model: {eroare_model}")
