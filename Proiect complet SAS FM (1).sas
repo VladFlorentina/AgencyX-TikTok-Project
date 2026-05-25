@@ -42,13 +42,14 @@ RUN;
 
 /* --- FACILITATEA 4*/
 DATA WORK.TIKTOK_CLEAN;
-    SET WORK.TIKTOK_RAW;
+    
+    SET WORK.TIKTOK_CLEAN; 
     WHERE author IS NOT MISSING;
 RUN;
 
 PROC PRINT DATA=WORK.TIKTOK_CLEAN (OBS=10);
     TITLE "Rezultat Facilitatea 4: Subset date fara autori lipsa";
-RUN;
+RUN;;
 
 /* --- FACILITATEA 5*/
 DATA WORK.TIKTOK_FUNCTII;
@@ -62,41 +63,7 @@ PROC PRINT DATA=WORK.TIKTOK_FUNCTII (OBS=15);
 RUN;
 
 
-/* --- FACILITATEA 6 */
-PROC SQL;
-    CREATE TABLE WORK.TOP_CREATORI AS
-    SELECT author, COUNT(video_id) AS cate_clipuri, SUM(likes) AS like_uri_totale
-    FROM WORK.TIKTOK_CLEAN
-    WHERE author IS NOT MISSING
-    GROUP BY author
-    HAVING SUM(likes) > 10000;
-
-    CREATE TABLE WORK.TIKTOK_FINAL AS
-    SELECT A.author, A.likes, A.plays, A.Viral_Flag, B.cate_clipuri
-    FROM WORK.TIKTOK_CLEAN A
-    INNER JOIN WORK.TOP_CREATORI B ON A.author = B.author
-    ORDER BY A.likes DESC;
-QUIT;
-
-/* --- FACILITATEA 7*/
-DATA WORK.TIKTOK_MASIVE;
-    SET WORK.TIKTOK_RAW;
-    ARRAY metrics(4) likes comments shares plays;
-    DO i = 1 TO 4;
-        IF metrics(i) = . THEN metrics(i) = 0;
-    END;
-    DROP i;
-RUN;
-
-PROC PRINT DATA=WORK.TIKTOK_MASIVE (OBS=20);
-    TITLE "Rezultat Facilitatea 7: Procesarea in masa a metricilor prin Arrays";
-    VAR author likes comments shares plays;
-RUN;
-
-
-
-
-
+/* Cerinta 6 */
 PROC SQL;
     CREATE TABLE WORK.TOP_CREATORI AS
     SELECT author, COUNT(video_id) AS cate_clipuri, SUM(likes) AS like_uri_totale
@@ -117,6 +84,7 @@ RUN;
 DATA WORK.TOP20; 
     SET WORK.TOP20 (OBS=20); 
 RUN;
+/* Cerinta 8 */
 PROC REPORT DATA=WORK.TOP20 NOWD HEADLINE CENTER;
     TITLE 'Raport Centralizat - Creatorii de top pe care putem miza (Top 20)';
     COLUMN author cate_clipuri like_uri_totale;
@@ -124,6 +92,7 @@ PROC REPORT DATA=WORK.TOP20 NOWD HEADLINE CENTER;
     DEFINE cate_clipuri / ANALYSIS SUM 'Total clipuri in tabel' FORMAT=COMMA8.;
     DEFINE like_uri_totale / ANALYSIS SUM 'Like-uri stranse per total' FORMAT=COMMA12.;
 RUN;
+/* Cerinta 9 */
 PROC MEANS DATA=WORK.TIKTOK_FINAL N MEAN MIN MAX MAXDEC=2;
     TITLE 'Ce inseamna sa fii viral? (Statistici din MEAN)';
     CLASS Viral_Flag; 
@@ -135,6 +104,7 @@ PROC CORR DATA=WORK.TIKTOK_FINAL PEARSON;
     VAR likes plays cate_clipuri;
     WITH likes; 
 RUN;
+/* Cerinta 10  */
 PROC SGPLOT DATA=WORK.TOP20;
     TITLE "Distributia celor mai urmariti 20 influenceri din set (BarChart)";
     VBAR author / RESPONSE=like_uri_totale CATEGORYORDER=RESPDESC FILLATTRS=(COLOR=CX0072B2);
@@ -146,6 +116,3 @@ PROC SGPLOT DATA=WORK.TIKTOK_CLEAN;
     SCATTER X=plays Y=likes / GROUP=Viral_Flag MARKERATTRS=(SYMBOL=CircleFilled);
     KEYLEGEND / TITLE="Prag viral (1 = da / 0 = inca nu)";
 RUN;
-
-
-
