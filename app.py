@@ -218,13 +218,13 @@ def main() -> None:
 
     st.sidebar.header("Modul 1: Analiza Descriptiva")
     page_1 = st.sidebar.radio(
-        "Sectiunea de baza (Colega):",
+        "Sectiunea de baza:",
         ["General (Overview)", "Calitatea datelor", "Analiza autorilor", "Analiza postarilor"]
     )
     
     st.sidebar.header("Modul 2: Analiza Statistica")
     page_2 = st.sidebar.radio(
-        "Sectiunea de varf (Tu):",
+        "Sectiunea avansata:",
         ["Nimic selectat", "Inspector Virale (loc/iloc)", "Metrici Actuale", "Regresie (Statsmodels)", "Tipologii (K-Means)"]
     )
 
