@@ -2,84 +2,114 @@
 
 ## Despre proiect
 
-Acest proiect analizeaza performanta postarilor si a autorilor de pe TikTok pentru o agentie fictiva de marketing numita TrendTok Solutions.
-Scopul este sa identificam ce tipuri de continut si ce autori au cele mai bune rezultate, astfel incat agentia sa poata lua decizii de business mai bune.
+TrendTok Solutions este un proiect de analiză a performanței postărilor și autorilor de pe TikTok, realizat pentru o agenție fictivă de marketing.
 
-Proiectul are doua componente:
-- aplicatie interactiva in Python, realizata cu Streamlit;
-- scripturi SAS pentru analiza si raportare.
+Scopul proiectului este identificarea tipurilor de conținut și a autorilor cu cele mai bune rezultate, astfel încât datele să poată susține decizii de business mai bine argumentate.
+
+## Proiect realizat în echipă
+
+Acesta este un proiect universitar dezvoltat împreună cu [Mădălina Crăiniceanu](https://github.com/madalinacrainiceanu) și [Vlad Florentina](https://github.com/VladFlorentina), cu o contribuție egală de 50% din partea fiecărui membru al echipei.
+
+## Componentele proiectului
+
+Proiectul are două componente principale:
+
+- o aplicație interactivă în Python, realizată cu Streamlit;
+- scripturi SAS pentru procesarea, analiza și raportarea datelor.
 
 ## Datele folosite
 
-Fisierul principal de lucru este `data/tiktok_merged_data_deduplicated.csv`.
-Contine informatii despre postari, autori, aprecieri, comentarii, distribuiri, vizualizari, hashtag-uri si alte atribute utile pentru analiza.
+Setul principal de date este disponibil în:
 
-## Ce am implementat in Python
-
-Aplicatia Streamlit din `app.py` include mai multe functionalitati cerute in PDF:
-- structura multi-pagina;
-- filtre interactive cu widget-uri;
-- import CSV cu pandas;
-- tratarea valorilor lipsa;
-- scalarea variabilei `plays`;
-- agregari si grupuri cu pandas;
-- accesarea datelor cu `loc` si `iloc`;
-- grafice dinamice;
-- clusterizare cu scikit-learn;
-- regresie multipla cu statsmodels;
-- afisarea de metrici generale.
-
-Aplicatia este gandita ca un dashboard de analiza pentru TrendTok Solutions:
-- pagina de overview prezinta sumarul general;
-- pagina de calitate a datelor arata valorile lipsa si corelatiile;
-- pagina de analiza a autorilor compara performanta creatorilor;
-- pagina de analiza a postarilor prezinta distributii si top postari;
-- pagina de inspector randuri permite vizualizarea cu `loc` si `iloc`;
-- pagina de machine learning grupeaza postarile cu K-Means;
-- pagina de modele statistice foloseste OLS pentru a estima vizualizarile.
-
-## Ce am implementat in SAS
-
-Fisierul `sas_academy_script.sas` contine exemple pentru cerintele SAS din proiect:
-- import de date din fisier extern;
-- formate definite de utilizator;
-- procesare conditionala si iterativa;
-- subseturi de date;
-- functii SAS;
-- combinarea seturilor de date prin SQL;
-- utilizarea masivelor;
-- raportare;
-- statistici descriptive;
-- grafice.
-
-## Cum rulezi proiectul Python
-
-1. Activeaza mediul virtual local:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
+```text
+data/tiktok_merged_data_deduplicated.csv
 ```
 
-2. Porneste aplicatia Streamlit:
+Acesta conține informații despre postări, autori, aprecieri, comentarii, distribuiri, vizualizări, hashtag-uri, muzică și alte atribute utile pentru analiză.
+
+## Aplicația Python
+
+Aplicația Streamlit include:
+
+- dashboard general cu indicatori și grafice;
+- filtre interactive pentru autori și performanța postărilor;
+- analiză a calității datelor și a valorilor lipsă;
+- agregări și statistici pe autori;
+- analiză a postărilor și a indicatorilor de interacțiune;
+- vizualizări dinamice cu Plotly;
+- inspector pentru postări virale folosind `loc` și `iloc`;
+- metrici generale pentru setul de date filtrat;
+- regresie multiplă cu Statsmodels;
+- clusterizare K-Means pentru identificarea tipologiilor de postări;
+- regresie logistică pentru clasificarea postărilor în funcție de performanță.
+
+## Componenta SAS
+
+Scripturile SAS acoperă mai multe operații de analiză și raportare, printre care:
+
+- importul datelor din fișiere externe;
+- procesare condițională și iterativă;
+- subseturi de date și funcții SAS;
+- combinarea seturilor de date prin SQL;
+- utilizarea masivelor;
+- statistici descriptive și raportare;
+- generarea de grafice.
+
+## Contribuții în cadrul echipei
+
+Proiectul a fost dezvoltat în mod colaborativ, prin contribuția egală a ambilor membri ai echipei.
+
+- **Mădălina Crăiniceanu** a lucrat la modulul de analiză predictivă și metrici din `analiza_predictiva_si_metrici.py`, inclusiv la funcționalitățile pentru metrici generale, regresie și clusterizare, precum și la scriptul SAS pentru statistici avansate.
+- **Vlad Florentina** a lucrat la aplicația Streamlit, prelucrarea și analiza inițială a setului de date, vizualizările dashboard-ului și componentele SAS pentru analiza și raportarea datelor.
+
+## Tehnologii
+
+- Python
+- Pandas
+- Streamlit
+- Plotly
+- Scikit-learn
+- Statsmodels
+- SAS
+
+## Instalare și rulare
+
+### Aplicația Python
+
+Instalează dependențele:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Pornește dashboard-ul Streamlit:
 
 ```powershell
 python -m streamlit run app.py
 ```
 
-## Cum rulezi partea SAS
+### Scripturile SAS
 
 1. Deschide SAS Studio sau SAS OnDemand for Academics.
-2. Incarca fisierul CSV in mediul SAS.
-3. Deschide `sas_academy_script.sas` si adapteaza calea catre fisier.
-4. Ruleaza scriptul si salveaza output-urile pentru documentatie.
+2. Încarcă fișierul CSV în mediul SAS.
+3. Deschide scriptul SAS dorit.
+4. Adaptează calea către fișierul de date, dacă este necesar.
+5. Rulează scriptul și salvează rezultatele pentru documentație.
 
 ## Structura proiectului
 
-- `app.py` - aplicatia principala Streamlit;
-- `requirements.txt` - dependinte Python;
-- `data/` - fisierul CSV cu datele TikTok;
-- `sas_academy_script.sas` - scriptul SAS;
-- `Cerinte seminar Pachete Software 2026 - INFO.pdf` - cerintele seminarului.
+```text
+AgencyX-TikTok-Project/
+├── data/                               # Setul de date TikTok
+├── word/                               # Documentație și materiale ale proiectului
+├── app.py                              # Aplicația Streamlit
+├── analiza_predictiva_si_metrici.py    # Analize predictive și metrici
+├── requirements.txt                    # Dependențe Python
+├── sas_academy_script.sas              # Script SAS principal
+├── sas_academy_statistici_avansate.sas # Statistici SAS avansate
+└── README.md
+```
 
-## Observatii
+## Licență
 
+Proiectul este disponibil sub licența MIT.
